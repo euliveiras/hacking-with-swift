@@ -88,5 +88,17 @@ print(string)
  
  Sets store many values, ut we don't choose their order
  
- Enums create our own types to specify a range of acceptable valuesk
+ Enums create our own types to specify a range of acceptable values
  */
+func getMangas() -> Void {
+    let arr: [String] = ["Naruto", "Naruto", "Bleach", "One Pice", "Dorohedoro", "Dorohedoro"]
+    let set = Set<String>(arr)
+    for manga in arr {
+        print(manga)
+    }
+
+    print(set.count)
+}
+
+getMangas()
+
