@@ -109,4 +109,78 @@ let crewCount = names.isEmpty ? "No one" : "Has \(names.count) count"
 
 print(crewCount)
 
+let platforms = [ "macOs", "iOS", "watchOS", "tvOS" ]
 
+for os in platforms {
+    print("swift works great in \(os)!")
+}
+
+for i in 1...10 {
+    print("\(i) table")
+    for j in 1...10 {
+        print("\(i) * \(j) = \(i*j)")
+    }
+}
+
+for x in 1..<5 {
+    print("Counting up to 5", x)
+}
+
+var lyric = "haters gonna hate"
+
+for _ in 1..<5 {
+    lyric += " hate"
+}
+
+print(lyric)
+
+var countDown = 10
+
+while countDown > 0 {
+    print("\(countDown)...")
+    countDown-=1
+    if countDown == 0{
+        print("BOOOOOOOOOOOOOOOOOOOOOOOOOOOM!")
+    }
+}
+
+let id = Int.random(in:  1...100)
+let decimal = Double.random(in: 0...1)
+
+var roll = 0
+
+while roll != 20 {
+    print("I rolled \(roll)")
+    roll = Int.random(in: 1...20)
+    if roll == 20 {
+        print("\(roll), critical hit, bitch!")
+    }
+}
+
+let filenames = [ "photo.jpeg", "card.txt", "avatar.jpg", "app.error", "icon.jpeg" ]
+
+for filename in filenames {
+    if filename.hasSuffix("error"){
+        print("Fatal error.")
+        break
+    } else if(filename.hasSuffix("jpeg") != true){
+        continue
+    }
+    print("Filename ended with suffix .jpeg: \(filename)")
+}
+
+let number1 = 13
+let number2 = 27
+
+var multiples = [Int]()
+
+for i in 1...100_000 {
+    if(i.isMultiple(of: number1) && i.isMultiple(of: number2)){
+        multiples.append(i)
+        
+    }
+    if(multiples.count == 10){
+        print(multiples)
+        break;
+    }
+}
