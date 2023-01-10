@@ -184,3 +184,19 @@ for i in 1...100_000 {
         break;
     }
 }
+
+func FizzBuzz(){
+    for i in 1...100{
+        if(i.isMultiple(of: 3) && (i.isMultiple(of: 5)))
+        { print("FizzBuzz")
+        } else if (i.isMultiple(of: 5)){
+            print("Buzz")
+        } else if (i.isMultiple(of: 3)) {
+            print("Fizz")
+        } else {
+            print(i)
+        }
+    }
+}
+
+FizzBuzz()
