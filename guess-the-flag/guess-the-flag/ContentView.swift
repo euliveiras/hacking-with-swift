@@ -13,6 +13,8 @@ struct ContentView: View {
     @State var showingScore = false
     @State var scoreTitle = ""
     @State var score = 0
+    @State var numberOfTries = 0
+    @State var hasExceedNumberOfTries = false
     
     @State var countries = [ "Estonia", "France", "Germany", "Ireland", "Italy", "Monaco", "Nigeria", "Poland", "Russia", "Spain", "UK", "US"].shuffled()
     
@@ -73,6 +75,16 @@ struct ContentView: View {
                 Button("Continue", action: askQuestion)
             } message: {
                 Text("You score is \(score)")
+            }
+            
+            .alert("Game is over", isPresented: $hasExceedNumberOfTries){
+                Button("Restart") {
+                    score = 0
+                    countries.shuffle()
+                    hasExceedNumberOfTries = false
+                }
+            } message: {
+                Text("Your score was \(score)")
             }
         }
 //        VStack(spacing: 5) {
@@ -179,14 +191,25 @@ struct ContentView: View {
             scoreTitle = "Correct"
             score+=1
         } else {
-            scoreTitle = "Wrong"
+            scoreTitle = "Wrong! This is the flag of \(countries[number])"
         }
-        showingScore = true
+        numberOfTries+=1
+        let num = getNumberOfTries()
+        if(num<8){
+            showingScore = true
+        }
     }
 
     func askQuestion(){
         countries.shuffle()
         correctAnswer = Int.random(in: 0..<2)
+    }
+    
+    func getNumberOfTries() -> Int{
+        if(numberOfTries >= 8){
+         hasExceedNumberOfTries = true
+        }
+        return numberOfTries
     }
 //
 //    func delete() {
