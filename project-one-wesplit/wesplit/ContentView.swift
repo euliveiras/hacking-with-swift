@@ -7,6 +7,21 @@
 
 import SwiftUI
 
+struct BlueTitle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.largeTitle)
+            .foregroundColor(.blue)
+    }
+    
+}
+
+extension View {
+    func myTitle() -> some View {
+        modifier(BlueTitle())
+    }
+}
+
 struct ContentView: View {
     @State var amount = 0.0
     @State var numberOfPeople = 2
@@ -34,6 +49,8 @@ struct ContentView: View {
     }
     
     var body: some View {
+            Text("My title")
+                .myTitle()
         NavigationView {
             Form {
                 Section {
