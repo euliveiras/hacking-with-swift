@@ -54,6 +54,8 @@ struct ContentView: View {
                     Picker("Amount of tip", selection: $tipAmount) {
                         ForEach(0..<101){
                             Text("\($0)%")
+                                .foregroundColor($0 == 0 ? .red : .black)
+
                         }
                     }
                     .pickerStyle(.navigationLink)
