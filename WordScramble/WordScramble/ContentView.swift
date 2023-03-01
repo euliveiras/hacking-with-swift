@@ -16,9 +16,10 @@ struct ContentView: View {
     @State var alertTitle = ""
     @State var alertMessage = ""
     @State var showingError = false
+    @State var score = 0
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 Section {
                     TextField("Enter your word", text: $newWord)
@@ -33,8 +34,8 @@ struct ContentView: View {
                         }
                     }
                 }
+                
             }
-            
             .navigationTitle("\(rootWord)")
             .onSubmit(addWord)
             .onAppear(perform: startGame)
@@ -43,13 +44,28 @@ struct ContentView: View {
             } message: {
                 Text(alertMessage)
             }
+            .toolbar {
+                ToolbarItem{
+                    Button("Restart game") {
+                        score = 0
+                        usedWords = []
+                        startGame()
+                    }
+                }
+            }
+            
+            Section("Your score") {
+                Text("\(score)")
+                    .font(.largeTitle)
+            }
+            
         }
-        
     }
     
     func addWord(){
         let answer = newWord.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-        guard answer.count > 0 else { return }
+        if answer == rootWord { return }
+        guard answer.count > 3 else { return }
         
         guard isOriginal(word: answer) else {
             wordError(title: "Word used already", message: "Be more original")
@@ -65,12 +81,13 @@ struct ContentView: View {
             wordError(title: "Word not possible", message: "You cant spell that word")
             return
         }
-            
-         
+        
+        
         withAnimation {
             usedWords.insert(answer, at: 0)
         }
         newWord = ""
+        score += answer.count
     }
     
     func startGame(){
