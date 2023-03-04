@@ -28,6 +28,8 @@ struct ContentView: View {
     @State var countries = [ "Estonia", "France", "Germany", "Ireland", "Italy", "Monaco", "Nigeria", "Poland", "Russia", "Spain", "UK", "US"].shuffled()
     
     @State var correctAnswer = Int.random(in: 0...2)
+    @State var animationAmount = 0.0
+    @State var opacityAmount = 1.0
     
     var body: some View {
         VStack {
@@ -55,10 +57,20 @@ struct ContentView: View {
                         }
                         ForEach(0..<3) { number in
                             Button {
+                                withAnimation {
+                                    animationAmount = 360
+                                    opacityAmount = 0.2
+                                }
                                 flagTapped(number)
-                                
                             } label: {
-                                FlagImage(flag: countries[number])
+                                if(correctAnswer == number){
+                                    FlagImage(flag: countries[number])
+                                    .rotation3DEffect(.degrees(animationAmount), axis: (x: 0, y: 1, z: 0))
+                                } else {
+                                    FlagImage(flag: countries[number])
+                                        .opacity(opacityAmount)
+                                        .scaleEffect(opacityAmount)
+                                }
                             }
                         }
                     }
@@ -89,6 +101,8 @@ struct ContentView: View {
                     score = 0
                     countries.shuffle()
                     hasExceedNumberOfTries = false
+                    animationAmount = 0
+                    opacityAmount = 1.0
                 }
             } message: {
                 Text("Your score was \(score)")
@@ -194,6 +208,8 @@ struct ContentView: View {
     }
 //
     func flagTapped(_ number: Int) {
+       
+        
         if number == correctAnswer {
             scoreTitle = "Correct"
             score+=1
@@ -205,11 +221,14 @@ struct ContentView: View {
         if(num<8){
             showingScore = true
         }
+      
     }
 
     func askQuestion(){
         countries.shuffle()
         correctAnswer = Int.random(in: 0..<2)
+        animationAmount = 0
+        opacityAmount = 1.0
     }
     
     func getNumberOfTries() -> Int{
