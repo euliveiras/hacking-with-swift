@@ -125,6 +125,23 @@ struct Anotations: View {
     }
 }
 
+struct ColorByAmount: ViewModifier {
+    let amount: Double
+    
+    func body(content: Content) -> some View {
+            if amount > 100 {
+                return Text(amount, format: .currency(code: "USD"))
+                    .foregroundColor(.red)
+            } else if amount > 10 {
+                return Text(amount, format: .currency(code: "USD"))
+                    .foregroundColor(.orange)
+            } else {
+                return Text(amount, format: .currency(code: "USD"))
+                    .foregroundColor(.yellow)
+            }
+    }
+}
+
 struct ContentView: View {
     @StateObject var expenses = Expenses()
     @State private var showingAddExpense = false
@@ -154,16 +171,8 @@ struct ContentView: View {
                             
                             Spacer()
                             
-                            if item.amount > 100 {
-                                Text(item.amount, format: .currency(code: "USD"))
-                                    .foregroundColor(.red)
-                            } else if item.amount > 10 {
-                                Text(item.amount, format: .currency(code: "USD"))
-                                    .foregroundColor(.orange)
-                            } else {
-                                Text(item.amount, format: .currency(code: "USD"))
-                                    .foregroundColor(.yellow)
-                            }
+                            Text(item.amount, format: .currency(code: "USD"))
+                                .modifier(ColorByAmount(amount: item.amount))
                         }
                     }
                 }
