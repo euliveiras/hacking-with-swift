@@ -60,6 +60,7 @@ struct UserSettings: Codable {
     var firstName: String
     var lastName: String
 }
+
 struct Item: View {
     @ObservedObject var user: User
     
@@ -78,7 +79,7 @@ struct UserDefaultEx: View {
     }
 }
 
-struct ContentView: View {
+struct Anotations: View {
     @StateObject var user = User()
     @State var showSheet = false
     @State private var userSettings = UserSettings(firstName: "Matheus", lastName: "Oliveira")
@@ -120,6 +121,115 @@ struct ContentView: View {
         
         VStack{
             Rows()
+        }
+    }
+}
+
+struct ContentView: View {
+    @StateObject var expenses = Expenses()
+    @State private var showingAddExpense = false
+    private var personalExpenses: [ExpenseItem] {
+        expenses.items.filter { $0.type == "Personal" }
+    }
+    
+    private var businessExpenses: [ExpenseItem] {
+        expenses.items.filter { $0.type == "Business" }
+    }
+    
+    var body: some View {
+        NavigationStack{
+            List {
+                Text("Personal")
+                    .font(.largeTitle)
+                ForEach(personalExpenses) { item in
+                    NavigationLink {
+                        ExpenseDetails(expenses: expenses, name: item.name, amount: item.amount, type: item.type, createdAt: item.createdAt, id: item.id)
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading){
+                                Text(item.name)
+                                    .font(.headline)
+                                Text(item.type)
+                            }
+                            
+                            Spacer()
+                            
+                            if item.amount > 100 {
+                                Text(item.amount, format: .currency(code: "USD"))
+                                    .foregroundColor(.red)
+                            } else if item.amount > 10 {
+                                Text(item.amount, format: .currency(code: "USD"))
+                                    .foregroundColor(.orange)
+                            } else {
+                                Text(item.amount, format: .currency(code: "USD"))
+                                    .foregroundColor(.yellow)
+                            }
+                        }
+                    }
+                }
+                .onDelete(perform: removePersonalItems)
+            }
+                
+            List {
+                Text("Business")
+                    .font(.largeTitle)
+                ForEach(businessExpenses) { item in
+                    NavigationLink {
+                        ExpenseDetails(expenses: expenses, name: item.name, amount: item.amount, type: item.type, createdAt: item.createdAt, id: item.id)
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading){
+                                Text(item.name)
+                                    .font(.headline)
+                                Text(item.type)
+                            }
+                            
+                            Spacer()
+                            
+                            if item.amount > 100 {
+                                Text(item.amount, format: .currency(code: "USD"))
+                                    .foregroundColor(.red)
+                            } else if item.amount > 10 {
+                                Text(item.amount, format: .currency(code: "USD"))
+                                    .foregroundColor(.orange)
+                            } else {
+                                Text(item.amount, format: .currency(code: "USD"))
+                                    .foregroundColor(.yellow)
+                            }
+                        }
+                    }
+                }
+                
+                .onDelete(perform: removeBusinessItems)
+            }
+            
+            .navigationTitle("iExpense")
+            .toolbar {
+                Button {
+                    showingAddExpense = true
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
+            .sheet(isPresented: $showingAddExpense){
+                AddView(expenses: expenses)
+            }
+        }
+    }
+    func removePersonalItems(at offSets: IndexSet) {
+        offSets.forEach { (i) in
+            let item = personalExpenses[i]
+            if let i = expenses.items.firstIndex(where: { $0.id == item.id }) {
+                expenses.items.remove(at: i)
+            }
+        }
+    }
+    func removeBusinessItems(at offSets: IndexSet) {
+        offSets.forEach { (i) in
+            let item = businessExpenses[i]
+            if let i = expenses.items.firstIndex(where: { $0.id == item.id }) {
+                expenses.items.remove(at: i)
+            }
         }
     }
 }
