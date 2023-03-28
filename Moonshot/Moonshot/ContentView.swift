@@ -2,94 +2,62 @@
 //  ContentView.swift
 //  Moonshot
 //
-//  Created by Matheus Oliveira  on 16/03/23.
+//  Created by Matheus Oliveira  on 17/03/23.
 //
 
 import SwiftUI
 
-struct GeometryReaderExample: View {
-    var body: some View {
-        GeometryReader { geo in
-            Image("Example")
-                .resizable()
-                .scaledToFit()
-                .frame(width: geo.size.width * 0.8, height: 300)
-                .frame(width: geo.size.width, height: geo.size.height)
-        }
-    }
-}
-
-struct User: Codable {
-    let name: String
-    let address: Address
-}
-
-struct Address: Codable {
-    let street: String
-    let city: String
-}
-
-struct CustomText: View {
-    let text: String
-    
-    var body: some View {
-        Text(text)
-    }
-    
-    init(_ string: String) {
-        self.text = string
-        print(string)
-    }
-}
-
 struct ContentView: View {
-    let layout = [
-        GridItem(.adaptive(minimum: 80, maximum: 120)),
+    let astronauts: [String:Astrounaut] = Bundle.main.decode("astronauts.json")
+    let missions: [Mission] = Bundle.main.decode("missions.json")
+    
+    let columns = [
+        GridItem(.adaptive(minimum: 150))
     ]
+    
     var body: some View {
-        ScrollView(.horizontal) {
-            LazyHGrid(rows: layout) {
-                    ForEach(0..<1000){
-                        Text("\($0)")
-                    }
-            }
-            
-        }
-        VStack {
+        NavigationStack {
             ScrollView {
-                LazyVGrid(columns: layout) {
-                    ForEach(0..<1000){
-                        Text("\($0)")
-                    }
-                }
-            }
-        }
-        HStack {
-            Button("Tap me") {
-                let input = """
-                    {
-                        "name": "Taylor Swift",
-                        "address": {
-                            "street": "555 Taylor Swift avenue",
-                            "city": "Nashville"
+                LazyVGrid(columns: columns) {
+                    ForEach(missions) { mission in
+                        NavigationLink {
+                        Text(mission.displayName)
+                        } label: {
+                            VStack{
+                                Image(mission.image)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 100, height: 100)
+                                    .padding()
+                                
+                                VStack {
+                                    Text(mission.displayName)
+                                        .font(.headline)
+                                        .foregroundColor(.white)
+                                    
+                                    Text(mission.formattedLauchDate)
+                                        .font(.caption)
+                                        .foregroundColor(.white.opacity(0.5))
+                                }
+                                .padding(.vertical)
+                                .frame(maxWidth: .infinity)
+                                .background(.lightBackground)
+                            }
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(.lightBackground)
+                            )
+                            
                         }
                     }
-                """
-                
-                let data = Data(input.utf8)
-                if let user = try? JSONDecoder().decode(User.self, from: data) {
-                    print(user.address.street)
+                    
                 }
+                .padding([.horizontal, .bottom])
             }
-        }
-        ScrollView(.horizontal) {
-            LazyHStack {
-                ForEach(0..<100) {
-                    CustomText("Row \($0)")
-                        .font(.title)
-                }
-            }
-            .frame(maxWidth: .infinity)
+            .navigationTitle("Moonshot")
+            .background(.darkBackground)
+            .preferredColorScheme(.dark)
         }
     }
 }
